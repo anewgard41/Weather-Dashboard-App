@@ -1,0 +1,16 @@
+:root {
+    --light: white;
+    --blue: rgb(0, 0, 112);
+    --black: black;
+    --yellow: rgb(255, 187, 0);
+}
+
+* {
+    border: 1px solid red;
+}
+
+header {
+    background-color: var(--blue);
+    color: var(--light);
+} 
+
