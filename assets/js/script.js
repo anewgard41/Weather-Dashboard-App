@@ -2,7 +2,7 @@
 // Grabbing the API! Declaring global variables. 
 
 var weatherAPI = "https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}"
-var weatherAPIKey = "9f568b68435686417139132a44d427c1"
+// var weatherAPIKey = 
 var searchHistory = []
 
 // Grabbing the DOM elements
