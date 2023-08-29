@@ -1,13 +1,14 @@
 
 // Grabbing the API! Declaring global variables. 
 
+var weatherAPIRootUrl = "https://api.openweathermap.org"
 var weatherAPI = "https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}"
-// var weatherAPIKey = 
+var weatherAPIKey = "9f568b68435686417139132a44d427c1"
 var searchHistory = []
 
 // Grabbing the DOM elements
 
-var searchForm = document.querySelector("#searchForm");
+var searchForm = $("#search-form");
 var searchInput = document.querySelector("#search-input");
 var searchHistoryContainer = document.querySelector("#history");
 var todayContainer = document.querySelector("#today");
@@ -20,7 +21,63 @@ dayjs.extend(window.dayjs_plugin_timezone);
 
 // 
  
-var city;
+console.log('loaded')
+
+function getCords(event) {
+    event.preventDefault();
+    console.log(event)
+    console.log(event.target[0].value);
+
+    var search = event.target[0].value
+
+    var apiUrl = `${weatherAPIRootUrl}/geo/1.0/direct?q=${search}&limit=5&appid=${weatherAPIKey}`
+
+    fetch(apiUrl)
+    .then(function (res) {
+        return res.json();
+    })
+    .then (function (data) {
+        console.log(data)
+        if (!data[0]) {
+            alert("Location not found");
+        } else {
+            // appendToHistory(search);
+            fetchWeather(data[0]);
+            fetchCurrent(data[0]);
+        }
+    })
+    .catch(function (err){
+        console.error(err);
+    });
+}
+
+function fetchWeather({lat, lon}) {
+    
+    var apiUrl = `${weatherAPIRootUrl}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${weatherAPIKey}`
+
+    fetch(apiUrl)
+    .then(function (res) {
+        return res.json();
+    })
+    .then (function (data) {
+        console.log(data)
+    })
+}
+
+function fetchCurrent({lat, lon}) {
+    
+    var apiUrl = `${weatherAPIRootUrl}/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherAPIKey}`
+
+    fetch(apiUrl)
+    .then(function (res) {
+        return res.json();
+    })
+    .then (function (data) {
+        console.log(data)
+    })
+}
+
+searchForm.on("submit", getCords);
 
 
 
