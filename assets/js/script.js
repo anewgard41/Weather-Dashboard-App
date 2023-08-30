@@ -2,7 +2,6 @@
 // Grabbing the API! Declaring global variables. 
 
 var weatherAPIRootUrl = "https://api.openweathermap.org"
-var weatherAPI = "https://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid={API key}"
 var weatherAPIKey = "9f568b68435686417139132a44d427c1"
 var searchHistory = []
 
@@ -19,9 +18,47 @@ var forecastContainer = document.querySelector("#forecast");
 dayjs.extend(window.dayjs_plugin_utc);
 dayjs.extend(window.dayjs_plugin_timezone);
 
-// 
- 
-console.log('loaded')
+// Here is the function that creates the search history list
+
+function renderSearchHistory() {
+    searchHistoryContainer.innerHTML = " ";
+    
+    for (var i = searchHistory.length - 1; i >=0; i--) {
+        var btn = document.createElement("button");
+        btn.setAttribute("type", "button");
+        btn.setAttribute("aria-controls", "today forecast");
+        btn.classList.add("history-btn", "btn-history");
+
+
+        btn.setAttribute("data-search", searchHistory[i]);
+        btn.textContent = searchHistory[i];
+        searchHistoryContainer.append(btn);
+    }
+}
+
+ function appendToHistory(search) {
+
+ if (searchHistory.indexOf !== -1) {
+    return;
+ }
+searchHistory.push(search);
+
+localStorage.setItem("search-history", JSON.stringify(searchHistory));
+renderSearchHistory();
+}
+
+function initSearchHistory() {
+    var storedHistory = localStorage.getItem("search-history");
+    if (storedHistory) {
+        searchHistory = JSON.parse(storedHistory);
+    }
+    renderSearchHistory();
+}
+
+
+
+
+
 
 function getCords(event) {
     event.preventDefault();
