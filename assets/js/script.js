@@ -222,6 +222,32 @@ function fetchWeather(location) {
     });
 }
 
+// function handleSearchFormSubmit(e) {
+//     if(!searchInput.value) {
+//         return;
+//     }
+
+//     e.preventDefault();
+//     var search = searchInput.value.trim();
+//     getCords(search);
+//     searchInput.value = " ";
+// }
+
+function handleSearchHistoryClick(e) {
+    // ensures that the search won't fire if button isn't a history button. 
+    if (!e.target.matches(".btn-history")) {
+        return;
+    }
+    
+    var btn = e.target;
+    var search = btn.getAttribute("data-search");
+    getCords(search);
+}
+
+initSearchHistory();
+// searchForm.on("submit", handleSearchFormSubmit);
+
+// searchHistoryContainer.on("click", handleSearchHistoryClick);
 
 
 searchForm.on("submit", getCords);
