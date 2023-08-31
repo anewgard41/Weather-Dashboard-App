@@ -18,7 +18,7 @@ var forecastContainer = document.querySelector("#forecast");
 dayjs.extend(window.dayjs_plugin_utc);
 dayjs.extend(window.dayjs_plugin_timezone);
 
-// Here is the function that creates the search history list
+// Here is the function that creates the search history list. Creates a button with the text content being the previous search. 
 
 function renderSearchHistory() {
     searchHistoryContainer.innerHTML = " ";
@@ -36,15 +36,14 @@ function renderSearchHistory() {
     }
 }
 
-// Function to add searches to local storage and search history. Renders search history. 
+// Function to add searches to local storage and search history. 
 
 function appendToHistory(search) {
 
-    if (searchHistory.indexOf !== -1) {
+    if (searchHistory.indexOf(search) !== -1) {
         return;
     }
     searchHistory.push(search);
-
     localStorage.setItem("search-history", JSON.stringify(searchHistory));
     renderSearchHistory();
 }
@@ -58,6 +57,8 @@ function initSearchHistory() {
     }
     renderSearchHistory();
 }
+
+// Creates current weather forecast card. Stores data from OpenWeatherAPI into variables that are then put into dynamically rendered HTML elements. 
 
 function renderCurrentWeather(city, weather) {
     var date = dayjs().format("M/D/YYYY");
@@ -85,8 +86,6 @@ function renderCurrentWeather(city, weather) {
     windEl.setAttribute("class", "card-text");
     humidityEl.setAttribute("class", "card-text");
 
-
-
     heading.textContent = `${city} (${date})`;
     weatherIcon.setAttribute("src", iconUrl);
     weatherIcon.setAttribute("alt", iconDescription);
@@ -100,6 +99,8 @@ function renderCurrentWeather(city, weather) {
     todayContainer.innerHTML = " ";
     todayContainer.append(card);
 }
+
+// Function that creates the 5 day forecast cards. 
 
 function renderForecastCard(forecast) {
 
@@ -142,6 +143,8 @@ function renderForecastCard(forecast) {
     forecastContainer.append(col);
 }
 
+
+// rendering the 5 day forecast. Used timestaps to demarcate the beginning and end of the forecast. Only got the data at noon for each forecast card. 
 function renderForcast(dailyForecast) {
 
     var startDt = dayjs().add(1, "day").startOf("day").unix();
@@ -178,13 +181,16 @@ function renderItems(city, data) {
 
 function getCords(search) {
 
-    // console logging the event in order to determine where the value of the search field is stored. 
+    // console logging the event in order to determine where the value of the search field is stored. Had originally put event in the parameter for the function in order to check out the data and it's objects. Left these comments in for posterity. 
 
     // event.preventDefault();
     // console.log(event)
     // console.log(event.target[0].value);
 
     // var search = event.target[0].value
+
+    //Uses the geolocation for a particular city to get the coordinates to use in fetchWeather function.
+
     var apiUrl = `${weatherAPIRootUrl}/geo/1.0/direct?q=${search}&limit=5&appid=${weatherAPIKey}`
 
     fetch(apiUrl)
@@ -192,7 +198,7 @@ function getCords(search) {
             return res.json();
         })
         .then(function (data) {
-            console.log(data)
+            console.log(data)  
             if (!data[0]) {
                 alert("Location not found");
             } else {
@@ -225,6 +231,8 @@ function fetchWeather(location) {
         });
 }
 
+
+// if no value in the searchForm don't run the function. 
 function handleSearchFormSubmit(e) {
     if (!searchInput.value) {
         return;
@@ -247,6 +255,9 @@ function handleSearchHistoryClick(e) {
     getCords(search);
 }
 
+
+// initiates the search history function on refresh. 
+// Event listeners for submiting the form and clicking on history buttons. 
 initSearchHistory();
 searchForm.addEventListener("submit", handleSearchFormSubmit);
 searchHistoryContainer.addEventListener("click", handleSearchHistoryClick);
