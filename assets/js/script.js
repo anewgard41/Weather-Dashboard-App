@@ -47,6 +47,7 @@ localStorage.setItem("search-history", JSON.stringify(searchHistory));
 renderSearchHistory();
 }
 
+
 function initSearchHistory() {
     var storedHistory = localStorage.getItem("search-history");
     if (storedHistory) {
@@ -138,19 +139,49 @@ function renderForecastCard(forecast) {
     forecastContainer.append(col);
 }
 
-function renderForcast (dailyForecast) {
+function renderForcast(dailyForecast) {
 
-    
+    var startDt = dayjs().add(1, "day").startOf("day").unix();
+    var endDt = dayjs().add(6, "day").startOf("day").unix();
+
+    var headingCol = document.createElement("div");
+    var heading = document.createElement("h4");
+
+    headingCol.setAttribute("class", "col-12");
+    heading.textContent = "5-Day Forecast:";
+    headingCol.append(heading);
+
+    forecastContainer.innerHTML = " ";
+    forecastContainer.append(headingCol);
+
+    for (var i = 0; i < dailyForecast.length; i++) {
+
+        if (dailyForecast[i].dt >= startDt && dailyForecast[i].dt < endDt) {
+
+            if (dailyForecast[i].dt_txt.slice(11, 13) == "12") {
+                renderForecastCard(dailyForecast[i]);
+            }
+
+        }
+    }
+
+}
+
+function renderItems(city, data) {
+    renderCurrentWeather(city, data.list[0], data.city.timezone);
+    renderForcast(data.list);
 }
 
 
 function getCords(event) {
+
+    // console logging the event in order to determine where the value of the search field is stored. 
+
     event.preventDefault();
     console.log(event)
     console.log(event.target[0].value);
 
     var search = event.target[0].value
-
     var apiUrl = `${weatherAPIRootUrl}/geo/1.0/direct?q=${search}&limit=5&appid=${weatherAPIKey}`
 
     fetch(apiUrl)
@@ -162,9 +193,8 @@ function getCords(event) {
         if (!data[0]) {
             alert("Location not found");
         } else {
-            // appendToHistory(search);
+            appendToHistory(search);
             fetchWeather(data[0]);
-            fetchCurrent(data[0]);
         }
     })
     .catch(function (err){
@@ -172,31 +202,27 @@ function getCords(event) {
     });
 }
 
-function fetchWeather({lat, lon}) {
+function fetchWeather(location) {
     
-    var apiUrl = `${weatherAPIRootUrl}/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${weatherAPIKey}`
+    var { lat } = location;
+    var { lon } = location;
+    var city = location.name;
+
+    var apiUrl = `${weatherAPIRootUrl}/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherAPIKey}`
 
     fetch(apiUrl)
     .then(function (res) {
         return res.json();
     })
     .then (function (data) {
-        console.log(data)
+        renderItems(city, data);
     })
+    .catch(function (err) {
+        console.error(err);
+    });
 }
 
-function fetchCurrent({lat, lon}) {
-    
-    var apiUrl = `${weatherAPIRootUrl}/data/2.5/weather?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherAPIKey}`
 
-    fetch(apiUrl)
-    .then(function (res) {
-        return res.json();
-    })
-    .then (function (data) {
-        console.log(data)
-    })
-}
 
 searchForm.on("submit", getCords);
 

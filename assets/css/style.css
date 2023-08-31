@@ -5,9 +5,11 @@
     --yellow: rgb(255, 187, 0);
 }
 
-* {
+/* wildcard border used to visualize containers while stylizing */
+
+/* * {
     border: 1px solid red;
-}
+} */
 
 header {
     background-color: var(--blue);
