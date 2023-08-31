@@ -76,26 +76,72 @@ function renderCurrentWeather(city, weather) {
     cardBody.setAttribute("class", "card-body");
     card.append(cardBody);
 
-// 
-// 
-// 
-// 
+    heading.setAttribute("class", "h3 card-title");
+    tempEl.setAttribute("class", "card-text");
+    windEl.setAttribute("class", "card-text");
+    humidityEl.setAttribute("class", "card-text");
 
-heading.textContent = `${city} (${date})`;
-weatherIcon.setAttribute
-weatherIcon.setAttribute
-weatherIcon.setAttribute
-heading.append
-tempEl.textContent
-windEl.textContent
-humidityEl.textContent
-cardBody.append
 
-todayContainer.innerHTML = " ";
-todayContainer.append(card);
+
+    heading.textContent = `${city} (${date})`;
+    weatherIcon.setAttribute("src", iconUrl);
+    weatherIcon.setAttribute("alt", iconDescription);
+    weatherIcon.setAttribute("class", "weather-img");
+    heading.append(weatherIcon);
+    tempEl.textContent = `Temp: ${tempF}°F`;
+    windEl.textContent = `Wind: ${windMph} MPH`;
+    humidityEl.textContent = `Humidity: ${humidity} %`;
+    cardBody.append(heading, tempEl, windEl, humidityEl);
+
+    todayContainer.innerHTML = " ";
+    todayContainer.append(card);
 }
 
+function renderForecastCard(forecast) {
 
+    var iconUrl = `https://openweathermap.org/img/w/${forecast.weather[0].icon}.png`
+    var iconDescription = forecast.weather[0].description;
+    var tempF = forecast.main.temp;
+    var humidity = forecast.main.humidity;
+    var windMph = forecast.wind.speed;
+
+
+    var col = document.createElement("div");
+    var card = document.createElement("div");
+    var cardBody = document.createElement("div");
+    var cardTitle = document.createElement("h5");
+    var weatherIcon = document.createElement("img");
+    var tempEl = document.createElement("p");
+    var windEl = document.createElement("p");
+    var humidityEl = document.createElement("p");
+
+    col.append(card);
+    card.append(cardBody);
+    cardBody.append(cardTitle, weatherIcon, tempEl, windEl, humidityEl);
+
+    col.setAttribute("class", "col-md");
+    col.classList.add("five-day-card");
+    card.setAttribute("class", "card bg-primary h-100 text-white");
+    cardBody.setAttribute("class", "card-body p-2");
+    cardTitle.setAttribute("class", "card-title");
+    tempEl.setAttribute("class", "card-text");
+    windEl.setAttribute("class", "card-text");
+    humidityEl.setAttribute("class", "card-text");
+
+    cardTitle.textContent = dayjs(forecast.dt_txt).format("M/D/YYYY");
+    weatherIcon.setAttribute("src", iconUrl);
+    weatherIcon.setAttribute("alt", iconDescription);
+    tempEl.textContent = `Temp: ${tempF} °F`;
+    windEl.textContent = `Wind: ${windMph} MPH`;
+    humidityEl.textContent = `Humidity: ${humidity} %`;
+
+    forecastContainer.append(col);
+}
+
+function renderForcast (dailyForecast) {
+
+    
+}
 
 
 function getCords(event) {
