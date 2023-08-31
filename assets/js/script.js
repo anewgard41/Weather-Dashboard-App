@@ -22,8 +22,8 @@ dayjs.extend(window.dayjs_plugin_timezone);
 
 function renderSearchHistory() {
     searchHistoryContainer.innerHTML = " ";
-    
-    for (var i = searchHistory.length - 1; i >=0; i--) {
+
+    for (var i = searchHistory.length - 1; i >= 0; i--) {
         var btn = document.createElement("button");
         btn.setAttribute("type", "button");
         btn.setAttribute("aria-controls", "today forecast");
@@ -36,17 +36,20 @@ function renderSearchHistory() {
     }
 }
 
- function appendToHistory(search) {
+// Function to add searches to local storage and search history. Renders search history. 
 
- if (searchHistory.indexOf !== -1) {
-    return;
- }
-searchHistory.push(search);
+function appendToHistory(search) {
 
-localStorage.setItem("search-history", JSON.stringify(searchHistory));
-renderSearchHistory();
+    if (searchHistory.indexOf !== -1) {
+        return;
+    }
+    searchHistory.push(search);
+
+    localStorage.setItem("search-history", JSON.stringify(searchHistory));
+    renderSearchHistory();
 }
 
+// initiates search history. gets search history from local storage and parses it. 
 
 function initSearchHistory() {
     var storedHistory = localStorage.getItem("search-history");
@@ -185,25 +188,25 @@ function getCords(search) {
     var apiUrl = `${weatherAPIRootUrl}/geo/1.0/direct?q=${search}&limit=5&appid=${weatherAPIKey}`
 
     fetch(apiUrl)
-    .then(function (res) {
-        return res.json();
-    })
-    .then (function (data) {
-        console.log(data)
-        if (!data[0]) {
-            alert("Location not found");
-        } else {
-            appendToHistory(search);
-            fetchWeather(data[0]);
-        }
-    })
-    .catch(function (err){
-        console.error(err);
-    });
+        .then(function (res) {
+            return res.json();
+        })
+        .then(function (data) {
+            console.log(data)
+            if (!data[0]) {
+                alert("Location not found");
+            } else {
+                appendToHistory(search);
+                fetchWeather(data[0]);
+            }
+        })
+        .catch(function (err) {
+            console.error(err);
+        });
 }
 
 function fetchWeather(location) {
-    
+
     var { lat } = location;
     var { lon } = location;
     var city = location.name;
@@ -211,19 +214,19 @@ function fetchWeather(location) {
     var apiUrl = `${weatherAPIRootUrl}/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${weatherAPIKey}`
 
     fetch(apiUrl)
-    .then(function (res) {
-        return res.json();
-    })
-    .then (function (data) {
-        renderItems(city, data);
-    })
-    .catch(function (err) {
-        console.error(err);
-    });
+        .then(function (res) {
+            return res.json();
+        })
+        .then(function (data) {
+            renderItems(city, data);
+        })
+        .catch(function (err) {
+            console.error(err);
+        });
 }
 
 function handleSearchFormSubmit(e) {
-    if(!searchInput.value) {
+    if (!searchInput.value) {
         return;
     }
 
@@ -238,7 +241,7 @@ function handleSearchHistoryClick(e) {
     if (!e.target.matches(".btn-history")) {
         return;
     }
-    
+
     var btn = e.target;
     var search = btn.getAttribute("data-search");
     getCords(search);
@@ -254,12 +257,3 @@ searchHistoryContainer.addEventListener("click", handleSearchHistoryClick);
 
 
 
-// GIVEN a weather dashboard with form inputs
-// WHEN I search for a city
-// THEN I am presented with current and future conditions for that city and that city is added to the search history
-// WHEN I view current weather conditions for that city
-// THEN I am presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, and the the wind speed
-// WHEN I view future weather conditions for that city
-// THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
-// WHEN I click on a city in the search history
-// THEN I am again presented with current and future conditions for that city
